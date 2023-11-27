@@ -151,7 +151,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                {{-- <tbody class="bg-white divide-y divide-gray-200">
                     @if ($registroEstudiante->isEmpty())
                         <tr>
                             <td colspan="6" class="px-6 py-4 whitespace-nowrap">No hay datos disponibles.</td>
@@ -171,7 +171,7 @@
                             </tr>
                         @endforeach
                     @endif
-                </tbody>
+                </tbody> --}}
             </table>
         </div>
 
