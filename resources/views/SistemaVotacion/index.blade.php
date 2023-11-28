@@ -15,7 +15,7 @@
         <div class="flex items-center justify-between max-w-screen-xl p-4 mx-auto">
             <div class="w-1/4">
                 <a href="/">
-                    <img src="/icon/descarga.jpeg" alt="Descripción de la imagen" style="max-width: 35%;">
+                    <img src="/icon/logo-inefrapasa.jpeg" alt="Descripción de la imagen" style="max-width: 35%;">
                 </a>
             </div>
             <div class="w-3/4 p-6">

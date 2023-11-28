@@ -14,7 +14,7 @@
 <div class="fixed top-0 left-0 z-10 flex flex-col items-center h-screen p-6 text-white bg-gray-800 lg:w-64"
     style="flex-grow: 1; flex-shrink: 1;">
     <a href="/">
-        <img class="w-24 h-24 mb-4 rounded-full" src="/icon/descarga.jpeg" alt="Imagen de perfil">
+        <img class="w-24 h-24 mb-4 rounded-full" src="/icon/logo-inefrapasa.jpeg" alt="Imagen de perfil">
     </a>
     <h2 class="mb-2 text-2xl">SVE INEFRAPASA</h2>
     <div>{{ Auth::user()->name }}</div>

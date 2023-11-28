@@ -11,7 +11,7 @@
 
 <body>
     <div class="relative flex flex-col items-center justify-center h-screen bg-cover bg-blur-10">
-        <img src="/icon/descarga.jpeg" alt="Descripción de la imagen" class="max-w-full">
+        <img src="/icon/logo-inefrapasa.jpeg" alt="Descripción de la imagen" class="max-w-full">
 
         <x-nombre-Institucion />
 
