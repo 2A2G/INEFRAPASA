@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -35,13 +36,17 @@ Route::middleware('auth')->group(function () {
 Route::prefix('inefrapasa')->group(function () {
     Route::get('/', [SVEController::class, 'index'])->name('sve.index');
     Route::post('/estudiante', [SVEController::class, 'create'])->name('sve.create');
-});
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('inefrapasa/estadistica/{component}', [SVEController::class, 'show'])->name('sve.showEstudiantes');
-    Route::post('inefrapasa/estadistica/', [SVEController::class, 'store'])->name('sve.storeEstudiantes');
-    Route::post('inefrapasa/estadistica/{component}', [PostulanteController::class, 'store'])->name('sve.storePostulante');
+    Route::prefix('/estadistica')->middleware('auth')->group(function () {
+        Route::post('/', [SVEController::class, 'store'])->name('sve.storeEstudiantes');
+        Route::get('/{component}', [SVEController::class, 'show'])->name('sve.showEstudiantes');
+        Route::post('/{component}', [PostulanteController::class, 'store'])->name('sve.storePostulante');
+
+        Route::post('/estadistica/{component}/storeStudents', [EstudianteController::class, 'store'])->name('sve.storeStudents');
+        Route::get('/estadistica/{component}/deliteStudents/{$estudiante}', [EstudianteController::class, 'destroy'])->name('sve.deleteStudents');
+
+    });
 });
 
 

@@ -17,6 +17,8 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.1.1/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('[data-collapse-toggle]').forEach((button) => {
@@ -33,8 +35,29 @@
 </head>
 
 <body>
+
     <div style="position: fixed; width: 300px;">
         @include('layouts.sidebar')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var status = {!! json_encode(session('status')) !!};
+                var message = {!! json_encode(session('message')) !!};
+
+                if (status === true) {
+                    Swal.fire({
+                        title: 'Notificaciones INEFRAPASA',
+                        text: message,
+                        icon: 'success'
+                    });
+                } else if (status === false) {
+                    Swal.fire({
+                        title: 'Notificaciones INEFRAPASA, ¡Error!',
+                        text: message,
+                        icon: 'error'
+                    });
+                }
+            });
+        </script>
     </div>
     <section style="margin-left: 300px; margin-top: 120px; margin-right: 35px;">
         <br>

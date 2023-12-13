@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string("curso_postulante");
             $table->integer("votos_postulante")->nullable();
             $table->string("estado_postulante")->default('1');
-            $table->string('created_by');
-            $table->string('updated_by');
             $table->timestamps();
         });
     }

@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('curso');
             $table->string('sexo');
             $table->string('estado')->default('0');
-            $table->string('created_by');
-            $table->string('updated_by');
             $table->timestamps();
         });
     }

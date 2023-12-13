@@ -22,8 +22,6 @@ class EstudianteFactory extends Factory
             'curso' => $this->faker->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']),
             'sexo' => $this->faker->randomElement(['Masculino', 'Femenino']),
             'estado' => $this->faker->randomElement(['0', '1']),
-            'created_by' => '1',
-            'updated_by' => '1',
         ];
     }
 }

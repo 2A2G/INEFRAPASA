@@ -32,7 +32,7 @@ class SVEController extends Controller
         if ($estudiante == true) {
             if ($estudiante->estadoVotacion != '0') {
                 session()->flash('status', 'success');
-                            
+
                 return view('SistemaVotacion.index', ['postulante' => $estudiante]);
             } else {
                 session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', ya ha votado');
@@ -64,7 +64,7 @@ class SVEController extends Controller
 
         switch ($component) {
             case 'estudiante':
-                $data = Estudiante::all(); // Carga todos los estudiantes
+                $data = Estudiante::paginate(20);
                 break;
             case 'sve':
                 $data = Postulante::orderByRaw(" CASE

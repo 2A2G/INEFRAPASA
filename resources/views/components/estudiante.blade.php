@@ -23,6 +23,7 @@
 
     <div id="chart"></div>
 
+
     <script>
         // Aquí es donde defines la cantidad total de estudiantes
         const totalStudents = [850];
@@ -76,6 +77,7 @@
     </script>
 
 
+
     <hr>
     <div class="mt-4">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Lista de Estudiantes</h2>
@@ -92,30 +94,30 @@
             <div class="w-full max-w-md p-6 bg-white rounded shadow-lg modal-content">
                 <p class="mb-4 text-2xl font-semibold">Agregar Estudiante</p>
 
-                <form id="form-1" method="POST">
+                <form action="{{ route('sve.storeStudents', ['component' => 'estudiante']) }}" method="POST">
                     @csrf
                     <div class="flex flex-wrap mb-2 -mx-3">
                         <div class="w-full px-3 mb-2">
                             <label for="numeroIdentificacion" class="block mb-2 font-semibold">Número de
                                 Identificación:</label>
-                            <input type="text" id="numeroIdentificacion" class="w-full px-4 py-2 border rounded"
-                                placeholder="Número de Identificación">
+                            <input type="text" id="numeroIdentificacion" name="numeroIdentificacion"
+                                class="w-full px-4 py-2 border rounded" placeholder="Número de Identificación">
                         </div>
                         <div class="w-full px-3 mb-2">
                             <label for="nombreCompleto" class="block mb-2 font-semibold">Nombre del estudiante:</label>
-                            <input type="text" id="nombreCompleto" class="w-full px-4 py-2 border rounded"
-                                placeholder="Nombre del estudiante">
+                            <input type="text" id="nombreCompleto" name="nombreCompleto"
+                                class="w-full px-4 py-2 border rounded" placeholder="Nombre del estudiante">
                         </div>
                     </div>
                     <div class="flex flex-wrap mb-2 -mx-3">
                         <div class="w-full px-3 mb-2">
                             <label for="curso" class="block mb-2 font-semibold">Grado:</label>
-                            <input type="text" id="curso" class="w-full px-4 py-2 border rounded"
+                            <input type="text" id="curso" name="curso" class="w-full px-4 py-2 border rounded"
                                 placeholder="Grado">
                         </div>
                         <div class="w-full px-3 mb-2">
                             <label for="sexo" class="block mb-2 font-semibold">Sexo:</label>
-                            <select id="sexo" class="w-full px-4 py-2 border rounded">
+                            <select id="sexo" name="sexo" class="w-full px-4 py-2 border rounded">
                                 <option value="hombre">Hombre</option>
                                 <option value="mujer">Mujer</option>
                             </select>
@@ -151,7 +153,7 @@
                         </th>
                     </tr>
                 </thead>
-                {{-- <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-white divide-y divide-gray-200">
                     @if ($registroEstudiante->isEmpty())
                         <tr>
                             <td colspan="6" class="px-6 py-4 whitespace-nowrap">No hay datos disponibles.</td>
@@ -159,70 +161,74 @@
                     @else
                         @foreach ($registroEstudiante as $student)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->identification_number }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->grade }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->status }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->numeroIdentificacion }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->nombreCompleto }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->curso }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->sexo }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="#" class="mr-2 text-blue-500 hover:underline edit-student">Editar</a>
-                                    <a href="{{ route('students.delete', $student->id) }}"
-                                        class="text-red-500 hover:underline">Eliminar</a>
+                                    @if ($student->estado == 0)
+                                        Activo
+                                    @else
+                                        Inactivo
+                                    @endif
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button type="button" data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+                                        class="inline-block px-4 py-2 mt-2 font-semibold text-white bg-blue-500 rounded-md">
+                                        Editar
+                                    </button>
+                                    <button data-modal-target="Eliminar" data-modal-toggle="Eliminar"
+                                        class="btn btn-red inline-block px-4 py-2 mt-2 font-semibold text-white bg-red-500 rounded-md">
+                                        Eliminar
+                                    </button>
+
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap"></td>
                             </tr>
                         @endforeach
                     @endif
-                </tbody> --}}
+                </tbody>
             </table>
-        </div>
+            {{ $registroEstudiante->links() }}
 
-    </div>
-
-    <!-- Modal de Confirmación -->
-    <div id="confirmation-modal" class="fixed inset-0 z-10 flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-black opacity-25 modal-bg"></div>
-        <div class="w-1/3 p-6 bg-white rounded shadow-lg modal-content">
-            <p id="confirmation-message" class="mb-4 text-2xl font-semibold">Editar Estudiante</p>
-            <form id="edit-form">
-                {{-- <input type="text" name="identification_number" class="w-full px-4 py-2 mb-2 border rounded" placeholder="Número de Identificación" value="{{ $student->identification_number }}"> --}}
-                {{-- <input type="text" name="name" class="w-full px-4 py-2 mb-2 border rounded" placeholder="Nombre del estudiante" value="{{ $student->name }}"> --}}
-                {{-- <input type="text" name="grade" class="w-full px-4 py-2 mb-2 border rounded" placeholder="Grado" value="{{ $student->grade }}">
-            <select name="status" class="w-full px-4 py-2 mb-2 border rounded"> --}}
-                {{-- <option value="hombre" {{ $student->status === 'hombre' ? 'selected' : '' }}>Hombre</option> --}}
-                {{-- <option value="mujer" {{ $student->status === 'mujer' ? 'selected' : '' }}>Mujer</option> --}}
-                </select>
-                <button id="save-edit" class="px-4 py-2 text-white bg-blue-500 rounded">Guardar</button>
-                <button class="px-4 py-2 ml-2 text-white bg-red-500 rounded" id="cancel-edit">Cancelar</button>
-            </form>
+            <div id="Eliminar" tabindex="-1"
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative p-4 w-full max-w-md max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <button type="button"
+                            class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-hide="Eliminar">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                        <div class="p-4 md:p-5 text-center">
+                            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">¿Está seguro que desea
+                                eliminar este registro? Esta acción es irreversible</h3>
+                            <form action="{{ route('sve.deleteStudents', ['component' => 'estudiante', 'estudiante']) }}"
+                                method="POST">
+                                @csrf
+                            </form>
+                            <button data-modal-hide="Eliminar" type="submit"
+                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                                Si, confirmar
+                            </button>
+                            <button data-modal-hide="Eliminar" type="button"
+                                class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">No,
+                                cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <br>
-@endsection
-
-
-@section('scripts')
-    <script>
-        document.querySelector('#form-1').addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('hola')
-            var numeroIdentificacion = document.querySelector('#numeroIdentificacion').value;
-            var nombreCompleto = document.querySelector('#nombreCompleto').value;
-            var curso = document.querySelector('#curso').value;
-            var sexo = document.querySelector('#sexo').value;
-
-            console.log(numeroIdentificacion);
-            axios.post('/inefrapasa/estadistica/', {
-                numeroIdentificacion: numeroIdentificacion,
-                nombreCompleto: nombreCompleto,
-                curso: curso,
-                sexo: sexo
-            })
-            console.log(ok);
-            .then(function(response) {
-                    console.log(response);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        });
-    </script>
 @endsection
