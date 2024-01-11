@@ -15,4 +15,8 @@ class Estudiante extends Model
         'sexo',
         'estado',
     ];
+    public function votacion()
+    {
+        return $this->hasOne(Votacion::class, 'id_estudiante', 'id');
+    }
 }

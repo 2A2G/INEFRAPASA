@@ -13,4 +13,10 @@ class Cargo extends Model
         'nombre_cargo',
         'descripcion_cargo',
     ];
+
+    // Relación con los postulantes
+    public function postulantes()
+    {
+        return $this->hasMany(Postulante::class);
+    }
 }

@@ -89,52 +89,6 @@
         </button>
 
 
-        <div id="popup-modal" tabindex="-1"
-            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="w-full max-w-md p-6 bg-white rounded shadow-lg modal-content">
-                <p class="mb-4 text-2xl font-semibold">Agregar Estudiante</p>
-
-                <form action="{{ route('sve.storeStudents', ['component' => 'estudiante']) }}" method="POST">
-                    @csrf
-                    <div class="flex flex-wrap mb-2 -mx-3">
-                        <div class="w-full px-3 mb-2">
-                            <label for="numeroIdentificacion" class="block mb-2 font-semibold">Número de
-                                Identificación:</label>
-                            <input type="text" id="numeroIdentificacion" name="numeroIdentificacion"
-                                class="w-full px-4 py-2 border rounded" placeholder="Número de Identificación">
-                        </div>
-                        <div class="w-full px-3 mb-2">
-                            <label for="nombreCompleto" class="block mb-2 font-semibold">Nombre del estudiante:</label>
-                            <input type="text" id="nombreCompleto" name="nombreCompleto"
-                                class="w-full px-4 py-2 border rounded" placeholder="Nombre del estudiante">
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap mb-2 -mx-3">
-                        <div class="w-full px-3 mb-2">
-                            <label for="curso" class="block mb-2 font-semibold">Grado:</label>
-                            <input type="text" id="curso" name="curso" class="w-full px-4 py-2 border rounded"
-                                placeholder="Grado">
-                        </div>
-                        <div class="w-full px-3 mb-2">
-                            <label for="sexo" class="block mb-2 font-semibold">Sexo:</label>
-                            <select id="sexo" name="sexo" class="w-full px-4 py-2 border rounded">
-                                <option value="hombre">Hombre</option>
-                                <option value="mujer">Mujer</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-center">
-                        <button type="submit" class="px-4 py-2 mx-2 text-white bg-blue-500 rounded">Guardar</button>
-
-                        <button type="button" data-modal-hide="popup-modal"
-                            class="px-4 py-2 mx-2 text-white bg-red-500 rounded">Cancelar</button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-
-
         <!-- Tabla de Estudiantes -->
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table class="min-w-full mt-4 divide-y divide-gray-200">
@@ -173,11 +127,14 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <button type="button" data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+                                    <button type="button" data-modal-target="popup-modal"
+                                        data-student-id="{{ $student->id }}" data-modal-toggle="popup-modal"
                                         class="inline-block px-4 py-2 mt-2 font-semibold text-white bg-blue-500 rounded-md">
                                         Editar
                                     </button>
+
                                     <button data-modal-target="Eliminar" data-modal-toggle="Eliminar"
+                                        {{ $id = $student->id }}
                                         class="btn btn-red inline-block px-4 py-2 mt-2 font-semibold text-white bg-red-500 rounded-md">
                                         Eliminar
                                     </button>
@@ -190,6 +147,54 @@
                 </tbody>
             </table>
             {{ $registroEstudiante->links() }}
+
+            <div id="popup-modal" tabindex="-1"
+                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="w-full max-w-md p-6 bg-white rounded shadow-lg modal-content">
+                    <p class="mb-4 text-2xl font-semibold">Agregar Estudiante</p>
+
+                    <form action="{{ route('sve.storeStudents', ['component' => 'estudiante']) }}" method="POST">
+                        @csrf
+                        <div class="flex flex-wrap mb-2 -mx-3">
+                            <div class="w-full px-3 mb-2">
+                                <label for="numeroIdentificacion" class="block mb-2 font-semibold">Número de
+                                    Identificación:</label>
+                                <input type="text" id="numeroIdentificacion" name="numeroIdentificacion"
+                                    value= "{{ $student->numeroIdentificacion }}" class="w-full px-4 py-2 border rounded"
+                                    placeholder="Número de Identificación">
+                            </div>
+                            <div class="w-full px-3 mb-2">
+                                <label for="nombreCompleto" class="block mb-2 font-semibold">Nombre del
+                                    estudiante:</label>
+                                <input type="text" id="nombreCompleto" name="nombreCompleto"
+                                    value= "{{ $student->nombreCompleto }}" class="w-full px-4 py-2 border rounded"
+                                    placeholder="Nombre del estudiante">
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap mb-2 -mx-3">
+                            <div class="w-full px-3 mb-2">
+                                <label for="curso" class="block mb-2 font-semibold">Grado:</label>
+                                <input type="text" id="curso" name="curso" class="w-full px-4 py-2 border rounded"
+                                    value= "{{ $student->curso }}" placeholder="Grado">
+                            </div>
+                            <div class="w-full px-3 mb-2">
+                                <label for="sexo" class="block mb-2 font-semibold">Sexo:</label>
+                                <select id="sexo" name="sexo" class="w-full px-4 py-2 border rounded">
+                                    <option value="hombre">Hombre</option>
+                                    <option value="mujer">Mujer</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="px-4 py-2 mx-2 text-white bg-blue-500 rounded">Guardar</button>
+
+                            <button type="button" data-modal-hide="popup-modal"
+                                class="px-4 py-2 mx-2 text-white bg-red-500 rounded">Cancelar</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
 
             <div id="Eliminar" tabindex="-1"
                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -228,6 +233,8 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
     <br>

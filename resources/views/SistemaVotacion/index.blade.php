@@ -29,7 +29,7 @@
 
     @switch(session('status') ?? 'default')
         @case('success')
-            @component('components.card-vocatacion', ['postulante' => $postulante])
+            @component('components.card-vocatacion', ['cargos' => $cargos, 'postulantes'=> $postulantes, 'estudiante' => $estudiante]);
             @endcomponent
         @break
 

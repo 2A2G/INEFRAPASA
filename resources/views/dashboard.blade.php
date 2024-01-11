@@ -8,9 +8,9 @@
         @endsection
     @break
 
-    @case('sve')
+    @case('postulaciones')
         @section('content')
-            @component('components.sve', ['registroPostulante' => $data])
+            @component('components.postulaciones', ['registroPostulante' => $data])
             @endcomponent
         @endsection
     @break

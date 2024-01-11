@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("numero_identificacion_postulante");
             $table->string("nombre_postulante")->nullable();
-            $table->string("cargo_postulante")->foreign('cargo_postulante')->references('id')->on('cargos')->onDelete('cascade')->nullable();
+            $table->foreignId("cargo_id")->constrained('cargos')->onDelete('cascade')->nullable();
             $table->string("foto_postulante");
             $table->string("curso_postulante");
             $table->integer("votos_postulante")->nullable();

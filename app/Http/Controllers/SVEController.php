@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\SVE;
 use App\Http\Controllers\Controller;
+use App\Models\Cargo;
 use App\Models\Estudiante;
 use App\Models\Postulante;
+use App\Models\votacion;
 use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
 
@@ -27,23 +29,54 @@ class SVEController extends Controller
     public function create(Request $request)
     {
         $numeroIdentidad = $request->input('numeroIdentidad');
+        // return $numeroIdentidad;
         $estudiante = Estudiante::where('numeroIdentificacion', $numeroIdentidad)->where('estado', '0')->first();
 
-        if ($estudiante == true) {
-            if ($estudiante->estadoVotacion != '0') {
-                session()->flash('status', 'success');
+        // return $estudiante;
 
-                return view('SistemaVotacion.index', ['postulante' => $estudiante]);
-            } else {
-                session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', ya ha votado');
-                session()->flash('status', 'warning');
-                return redirect()->back();
-            }
-        } else {
+        // Verificar si el estudiante existe
+        if (!$estudiante) {
             session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', no existe en la base de datos. Verifique e intente nuevamente.');
             session()->flash('status', 'error');
             return redirect()->back();
         }
+
+        // Verificar si el estudiante ya ha votado
+        $votacion = votacion::where('id_estudiante', $estudiante->id)->first();
+
+        // return $votacion;
+        //verificar si el estudiante ya ha votado y completado su votacion 
+        if ($votacion && $votacion->representante_curso == '1' && $votacion->contralor == '1' && $votacion->personero == '1') {
+            session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', ya ha votado y completado su votación.');
+            session()->flash('status', 'warning');
+            return redirect()->back();
+        }
+
+        $postulantes = Postulante::where('estado_postulante', '0')->get();
+        if (!$postulantes || $postulantes->count() == 0) {
+            session()->flash('message', 'El sistema de votacion no tiene postulantes registrados. Comuniquese con el administrador del sistema.');
+            session()->flash('status', 'error');
+            return redirect()->back();
+        }
+        // return $postulantes;
+
+        session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', puede votar.');
+        session()->flash('status', 'success');
+
+        // Verificar si el estudiante ya ha votado y no ha completado su votacion
+        $cargos = Cargo::with(['postulantes' => function ($query) {
+            $query->join('cargos', 'postulantes.cargo_id', '=', 'cargos.id')
+                ->select('postulantes.*', 'cargos.nombre_cargo')
+                ->orderByRaw("CASE
+                    WHEN cargos.nombre_cargo = 'Representante de Curso' THEN 1
+                    WHEN cargos.nombre_cargo = 'Contralor' THEN 2
+                    WHEN cargos.nombre_cargo = 'Personero' THEN 3
+                    ELSE 4 END");
+        }])->get();
+
+        // return $cargos;
+
+        return view('SistemaVotacion.index', ['cargos' => $cargos, 'postulantes' => $postulantes, 'estudiante' => $estudiante]);
     }
 
 
@@ -66,7 +99,7 @@ class SVEController extends Controller
             case 'estudiante':
                 $data = Estudiante::paginate(20);
                 break;
-            case 'sve':
+            case 'postulaciones':
                 $data = Postulante::orderByRaw(" CASE
         WHEN cargo_postulante = 'Transición' THEN 1
         WHEN cargo_postulante = 'Primero' THEN 2

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('votacions', function (Blueprint $table) {
             $table->id();
-            $table->string('id_estudiante')->foreign('id_estudiante')->references('id')->on('estudiantes');
+            $table->foreignId('id_estudiante')->foreign('id_estudiante')->references('id')->on('estudiantes');
             $table->string('representante_curso')->default('0');
             $table->string('contralor')->default('0');
             $table->string('personero')->default('0');

@@ -47,9 +47,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('sve.showEstudiantes', ['component' => 'sve']) }}"
+                        <a href="{{ route('sve.showEstudiantes', ['component' => 'postulaciones']) }}"
                             class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-red-500 dark:hover:bg-gray-700">
-                            S V E</a>
+                            Postulaciones</a>
                     </li>
                     <li>
                         <a href="{{ route('sve.showEstudiantes', ['component' => 'conteovotos']) }}"
