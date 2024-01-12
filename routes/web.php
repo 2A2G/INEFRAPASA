@@ -43,9 +43,10 @@ Route::prefix('inefrapasa')->group(function () {
         Route::get('/{component}', [SVEController::class, 'show'])->name('sve.showEstudiantes');
         Route::post('/{component}', [PostulanteController::class, 'store'])->name('sve.storePostulante');
 
-        Route::post('/estadistica/{component}/storeStudents', [EstudianteController::class, 'store'])->name('sve.storeStudents');
-        Route::get('/estadistica/{component}/deliteStudents/{$estudiante}', [EstudianteController::class, 'destroy'])->name('sve.deleteStudents');
+        Route::post('/{component}/storeStudents', [EstudianteController::class, 'store'])->name('sve.storeStudents');
+        Route::post('/{component}/deliteStudents/{estudiante}', [EstudianteController::class, 'destroy'])->name('sve.deleteStudents');
 
+        
     });
 });
 

@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estudiantes', function (Blueprint $table) {
-            $table->id('numeroIdentificacion_id');
-            $table->string('nombreCompleto');
-            $table->bigInteger('curso_id');
-            $table->bigInteger('estado_id');
-            $table->string('sexo');
+        Schema::create('cursos', function (Blueprint $table) {
+            $table->id('curso_id');
+            $table->string('nombreCurso');
             $table->timestamps();
+            $table->bigInteger('estado_id');
 
-            $table->foreign('curso_id')->references('curso_id')->on('cursos');
             $table->foreign('estado_id')->references('estado_id')->on('estados');
         });
-        
     }
 
     /**
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estudiantes');
+        Schema::dropIfExists('cursos');
     }
 };

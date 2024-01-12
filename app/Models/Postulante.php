@@ -7,20 +7,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class Postulante extends Model
 {
-    use HasFactory;
     protected $fillable = [
-        'numero_identificacion_postulante',
-        'nombre_postulante',
-        'cargo_id ',
-        'foto_postulante',
-        'curso_postulante',
-        'votos_postulante',
-        'estado_postulante',
+        'numeroIdentificacion_id',
+        'cargo_id',
+        'fotoPostulante',
+        'estado_id',
     ];
 
-    // Relación inversa con los cargos
+    // Un postulante pertenece a un cargo
     public function cargo()
     {
         return $this->belongsTo(Cargo::class, 'cargo_id');
+    }
+
+    //Un postulante pertenece a un estudiante
+    public function estudiante()
+    {
+        return $this->belongsTo(Estudiante::class, 'numeroIdentificacion_id');
+    }
+
+    //Un cargo puede tener un solo estado
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'estado_id');
+    }
+
+    //Un postulante puede tener muchos votos
+    public function voto()
+    {
+        return $this->hasMany(Voto::class, 'postulante_id');
     }
 }

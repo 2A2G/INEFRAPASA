@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estudiantes', function (Blueprint $table) {
-            $table->id('numeroIdentificacion_id');
-            $table->string('nombreCompleto');
-            $table->bigInteger('curso_id');
+        Schema::create('votos', function (Blueprint $table) {
+            $table->id('voto_id');
+            $table->bigInteger('postulante_id');
+            $table->bigInteger('cargo_id');
             $table->bigInteger('estado_id');
-            $table->string('sexo');
+            $table->string('cantidadVotos');
             $table->timestamps();
 
-            $table->foreign('curso_id')->references('curso_id')->on('cursos');
+            
+            $table->foreign('postulante_id')->references('postulante_id')->on('postulantes');
+            $table->foreign('cargo_id')->references('cargo_id')->on('cargos');
             $table->foreign('estado_id')->references('estado_id')->on('estados');
         });
-        
     }
 
     /**
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estudiantes');
+        Schema::dropIfExists('votos');
     }
 };

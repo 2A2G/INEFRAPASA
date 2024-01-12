@@ -49,33 +49,40 @@
         }
 
         // Comienza a actualizar el recuento
+        // Definimos un intervalo para actualizar el conteo cada 100 milisegundos
         const interval = setInterval(updateCount, 100);
+
+        // Configuramos las opciones para el gráfico
         const options = {
             chart: {
                 type: 'bar',
-                height: 350
+                height: 350 // Altura del gráfico
             },
             title: {
-                text: 'Hombres y Mujeres'
+                text: 'Hombres y Mujeres' // Título del gráfico
             },
             series: [{
-                name: 'Hombres',
-                data: [20, 30, 40, 45, 50, 49, 60, 70, 91, 125, 155, 100]
-            }, {
-                name: 'Mujeres',
-                data: [10, 23, 31, 28, 40, 36, 50, 55, 65, 85, 95, 190]
-            }],
+                    name: 'Hombres', // Nombre de la serie
+                    data: [20, 30, 40, 45, 50, 49, 60, 70, 91, 125, 155, 100] // Datos de la serie
+                },
+                {
+                    name: 'Mujeres', // Nombre de la serie
+                    data: [10, 23, 31, 28, 40, 36, 50, 55, 65, 85, 95, 190] // Datos de la serie
+                }
+            ],
             xaxis: {
                 categories: ['Transición', 'Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto',
                     'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Undécimo'
-                ]
+                ] // Categorías para el eje X
             }
         };
 
+        // Creamos el gráfico con las opciones definidas
         const chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        // Renderizamos el gráfico
         chart.render();
     </script>
-
 
 
     <hr>
@@ -88,10 +95,11 @@
             Agregar Estudiante
         </button>
 
+        
 
         <!-- Tabla de Estudiantes -->
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table class="min-w-full mt-4 divide-y divide-gray-200">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número de
@@ -110,7 +118,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @if ($registroEstudiante->isEmpty())
                         <tr>
-                            <td colspan="6" class="px-6 py-4 whitespace-nowrap">No hay datos disponibles.</td>
+                            <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center">No hay datos disponibles.
+                            </td>
                         </tr>
                     @else
                         @foreach ($registroEstudiante as $student)
@@ -126,21 +135,17 @@
                                         Inactivo
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <button type="button" data-modal-target="popup-modal"
                                         data-student-id="{{ $student->id }}" data-modal-toggle="popup-modal"
                                         class="inline-block px-4 py-2 mt-2 font-semibold text-white bg-blue-500 rounded-md">
                                         Editar
                                     </button>
-
                                     <button data-modal-target="Eliminar" data-modal-toggle="Eliminar"
-                                        {{ $id = $student->id }}
                                         class="btn btn-red inline-block px-4 py-2 mt-2 font-semibold text-white bg-red-500 rounded-md">
                                         Eliminar
                                     </button>
-
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap"></td>
                             </tr>
                         @endforeach
                     @endif
@@ -151,7 +156,7 @@
             <div id="popup-modal" tabindex="-1"
                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="w-full max-w-md p-6 bg-white rounded shadow-lg modal-content">
-                    <p class="mb-4 text-2xl font-semibold">Agregar Estudiante</p>
+                    <p class="mb-4 text-2xl font-semibold text-center">Información del Estudiante</p>
 
                     <form action="{{ route('sve.storeStudents', ['component' => 'estudiante']) }}" method="POST">
                         @csrf
@@ -218,14 +223,18 @@
                             </svg>
                             <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">¿Está seguro que desea
                                 eliminar este registro? Esta acción es irreversible</h3>
-                            <form action="{{ route('sve.deleteStudents', ['component' => 'estudiante', 'estudiante']) }}"
+                            <form
+                                action="{{ route('sve.deleteStudents', ['component' => 'estudiante', 'estudiante' => $student]) }}"
                                 method="POST">
                                 @csrf
+
+                                <!-- Aquí puedes agregar un botón de envío o cualquier otro elemento de formulario que necesites -->
+                                <button data-modal-hide="Eliminar" type="submit"
+                                    class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                                    Si, confirmar
+                                </button>
                             </form>
-                            <button data-modal-hide="Eliminar" type="submit"
-                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                                Si, confirmar
-                            </button>
+
                             <button data-modal-hide="Eliminar" type="button"
                                 class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">No,
                                 cancelar</button>
@@ -233,8 +242,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
     <br>

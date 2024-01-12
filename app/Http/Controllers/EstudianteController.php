@@ -29,29 +29,35 @@ class EstudianteController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request;
         $validator = validator($request->all(), [
-            'numeroIdentificacion' => 'required|string|unique:estudiantes,numeroIdentificacion',
+            'numeroIdentificacion' => 'required|string',
             'nombreCompleto' => 'required|string|alpha_spaces',
             'curso' => 'required|string',
             'sexo' => 'required|string|alpha_spaces',
         ]);
 
         if ($validator->fails()) {
-            // Redirige a la vista deseada con los datos de la sesión
-            return back()
-                ->with('status', false)
-                ->with('message', 'No se pudo registrar el estudiante, por favor verifique los datos ingresados');
+            return $this->redirectBackWithMessage(false, 'No se pudo registrar el estudiante, por favor verifique los datos ingresados');
         }
 
-        $estudiante = new Estudiante();
-        $estudiante->create($validator->validated());
+        $estudiante = Estudiante::where('numeroIdentificacion', $request->numeroIdentificacion)->first();
 
-        // Redirige a la vista deseada con los datos de la sesión
-        return back()
-            ->with('status', true)
-            ->with('message', 'Estudiante registrado correctamente');
+        if ($estudiante === null) {
+            Estudiante::create($validator->validated());
+            return $this->redirectBackWithMessage(true, 'Estudiante registrado correctamente');
+        } else {
+            $estudiante->update($validator->validated());
+            return $this->redirectBackWithMessage(true, 'Estudiante actualizado correctamente');
+        }
     }
 
+    private function redirectBackWithMessage($status, $message)
+    {
+        return back()
+            ->with('status', $status)
+            ->with('message', $message);
+    }
 
 
 
@@ -76,7 +82,7 @@ class EstudianteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update()
+    public function update($component, Estudiante $estudiante)
     {
         //
     }
@@ -84,7 +90,18 @@ class EstudianteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Estudiante $estudiante)
+    public function destroy($component, Estudiante $estudiante)
     {
+        // return $estudiante;
+        if ($estudiante == null) {
+            return back()
+                ->with('status', false)
+                ->with('message', 'No se pudo eliminar el estudiante, por favor verifique los datos ingresados');
+        }
+        $estudiante->estado = '1';
+        $estudiante->save();
+        return back()
+            ->with('status', true)
+            ->with('message', 'Estudiante eliminado correctamente');
     }
 }

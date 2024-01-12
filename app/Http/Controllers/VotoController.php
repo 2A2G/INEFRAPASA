@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cargo;
+use App\Models\Voto;
 use Illuminate\Http\Request;
 
-class CargoController extends Controller
+class VotoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class CargoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cargo $cargo)
+    public function show(Voto $voto)
     {
         //
     }
@@ -42,7 +42,7 @@ class CargoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cargo $cargo)
+    public function edit(Voto $voto)
     {
         //
     }
@@ -50,7 +50,7 @@ class CargoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cargo $cargo)
+    public function update(Request $request, Voto $voto)
     {
         //
     }
@@ -58,7 +58,7 @@ class CargoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cargo $cargo)
+    public function destroy(Voto $voto)
     {
         //
     }

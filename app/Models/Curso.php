@@ -5,25 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Estudiante extends Model
+class Curso extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'numeroIdentificacion_id',
-        'nombreCompleto',
-        'curso',
-        'sexo',
+        'curso_id',
+        'nombreCurso',
         'estado_id',
     ];
 
-    public function postulante()
+    public function estudiante()
     {
-        return $this->hasOne(Postulante::class, 'numeroIdentificacion_id', 'numeroIdentificacion_id');
-    }
-
-    public function curso()
-    {
-        return $this->belongsTo(Curso::class, 'curso_id');
+        return $this->hasMany(Estudiante::class, 'curso_id', 'curso_id');
     }
 
     //un cargo puede tener un solo estado
@@ -31,4 +24,5 @@ class Estudiante extends Model
     {
         return $this->belongsTo(Estado::class, 'estado_id');
     }
+    
 }

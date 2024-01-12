@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cargo;
 use App\Models\Estudiante;
 use App\Models\Postulante;
 use Illuminate\Http\Request;
@@ -29,41 +30,39 @@ class PostulanteController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request...
-        $request->validate([
-            'foto_postulante' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'numero_identidad_postulante' => 'required|string|max:255',
-            'curso_postulante' => 'required|string|max:9',
-            'cargo_postulante' => 'required|string|max:255',
-
+        // return $request;
+        $validator = validator($request->all(), [
+            'numeroIdentificacion_id' => 'required|string',
+            'cargo_id' => 'required|string',
+            'curso' => 'required|string',
         ]);
 
-        $estudiante = Estudiante::where('numeroIdentificacion', $request->numero_identidad_postulante);
+        if ($validator->fails()) {
+            return $this->redirectBackWithMessage(false, 'No se pudo registrar el postulante, por favor verifique los datos ingresados');
+        }
 
-        if ($estudiante == true) {
+        $postulante = Estudiante::where('numeroIdentificacion', $request->numeroIdentificacion_id)
+            ->where('estado', '0')
+            ->first();
+
+        $postulante1 = Cargo::where('nombre_cargo', $request->cargo_id)->first();
+
+        return $postulante;
+
+        if ($postulante === null && $postulante1 === null) {
+            return $this->redirectBackWithMessage(false, 'El número de identificación ingresado no concuerda con ningún estudiante registrado, o el estudiante no se encuentra activo');
         } else {
-            return back()
-                ->with('error', 'El estudiante con el número de identidad ' . $request->numero_identidad_postulante . ' no existe en la base de datos. Verifique e intente nuevamente.');
+            Postulante::create($validator->validated());
+            return $this->redirectBackWithMessage(true, 'Postulante registrado correctamente');
         }
-
-        // Handle the uploaded image...
-        if ($request->hasFile('foto_postulante')) {
-            $imageName = time() . '.' . $request->foto_postulante->extension();
-            $request->foto_postulante->move(public_path('candidatos'), $imageName);
-        }
-
-        // Store the postulante...
-        $postulante = new Postulante;
-        $postulante->name = $request->name;
-        $postulante->degree = $request->degree;
-        $postulante->foto_candidato = $imageName; // Save the path in the foto_candidato column
-        $postulante->save();
-
-        return back()
-            ->with('success', 'You have successfully upload image.')
-            ->with('image', $imageName);
     }
 
+    private function redirectBackWithMessage($status, $message)
+    {
+        return back()
+            ->with('status', $status)
+            ->with('message', $message);
+    }
 
     /**
      * Display the specified resource.

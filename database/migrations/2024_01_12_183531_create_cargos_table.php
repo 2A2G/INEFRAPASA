@@ -12,10 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cargos', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre_cargo');
-            $table->string('descripcion_cargo');
-            $table->timestamps();
+            Schema::create('cargos', function (Blueprint $table) {
+                $table->id('cargo_id');
+                $table->bigInteger('estado_id');
+                $table->string('nombreCargo');
+                $table->string('descripcionCargo');
+                $table->timestamps();
+
+                $table->foreign('estado_id')->references('estado_id')->on('estados');
+            });
         });
     }
 
