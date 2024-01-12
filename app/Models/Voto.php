@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Voto extends Model
 {
     use HasFactory;
+
+    protected $primaryKey = 'voto_id';
     protected $filable = [
-        'voto_id',
         'postulante_id',
         'cargo_id',
         'cantidadVotos',
@@ -18,11 +19,11 @@ class Voto extends Model
 
     public function estado()
     {
-        return $this->belongsTo(Estado::class, 'estado_id');
+        return $this->belongsTo(Estado::class);
     }
 
     public function postulante()
     {
-        return $this->belongsTo(Postulante::class, 'postulante_id');
+        return $this->belongsTo(Postulante::class);
     }
 }

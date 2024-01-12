@@ -17,7 +17,7 @@ class EstadoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombreEstado' => $this->faker->randomElement(['Activo', 'Inactivo']),
         ];
     }
 }

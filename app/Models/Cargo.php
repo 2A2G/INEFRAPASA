@@ -8,18 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Cargo extends Model
 {
     use HasFactory;
-    protected $filiable = [
-        'cargo_id',
-        'estado_id',
+    protected $primaryKey = 'estado_id';
+    protected $fillable = [
         'nombreCargo',
         'descripcionCargo'
     ];
 
-    public function estado(){
+    public function estado()
+    {
         return $this->belongsTo(Estado::class);
     }
 
-    public function postulante(){
+    public function postulantes()
+    {
         return $this->hasMany(Postulante::class);
     }
 }

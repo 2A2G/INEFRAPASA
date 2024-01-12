@@ -19,9 +19,9 @@ class EstudianteFactory extends Factory
         return [
             'numeroIdentificacion' => $this->faker->unique()->numerify('##########'),
             'nombreCompleto' => $this->faker->name(),
-            'curso' => $this->faker->randomElement(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']),
+            'curso_id' => $this->faker->numberBetween(1, 12),
             'sexo' => $this->faker->randomElement(['Masculino', 'Femenino']),
-            'estado' => $this->faker->randomElement(['0', '1']),
+            'estado_id' => $this->faker->numberBetween(1, 2),
         ];
     }
 }

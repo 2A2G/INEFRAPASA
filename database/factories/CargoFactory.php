@@ -17,7 +17,10 @@ class CargoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombreCargo' => $this->faker->randomElement(['Representante de Curso', 'Contralor', 'Personero']),
+            'descripcionCargo' => $this->faker->text,
+            'estado_id' => $this->faker->randomElement([1, 2]),
+
         ];
     }
 }
