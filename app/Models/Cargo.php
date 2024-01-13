@@ -16,11 +16,11 @@ class Cargo extends Model
 
     public function estado()
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsTo(Estado::class, 'estado_id');
     }
 
     public function postulantes()
     {
-        return $this->hasMany(Postulante::class);
+        return $this->hasMany(Postulante::class, 'cargo_id');
     }
 }

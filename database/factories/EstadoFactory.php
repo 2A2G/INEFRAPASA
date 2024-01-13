@@ -14,10 +14,19 @@ class EstadoFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    private static $indiceCurso = 0;
+    private static $nombresEstados = [
+        'Activo', 'Inactivo'
+    ];
+
     public function definition(): array
     {
+        $nombreEstado = self::$nombresEstados[self::$indiceCurso % count(self::$nombresEstados)];
+        self::$indiceCurso++;
+
         return [
-            'nombreEstado' => $this->faker->randomElement(['Activo', 'Inactivo']),
+            'nombreEstado' => $nombreEstado,
         ];
     }
 }

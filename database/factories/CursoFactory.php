@@ -27,7 +27,7 @@ class CursoFactory extends Factory
 
         return [
             'nombreCurso' => $nombreCurso,
-            'estado_id' => $this->faker->numberBetween(1, 2),
+            'estado_id' => '1'
         ];
     }
 }

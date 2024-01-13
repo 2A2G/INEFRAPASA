@@ -15,8 +15,8 @@ return new class extends Migration
             // $table->id();
             $table->bigIncrements('cargo_id');
             $table->Integer('estado_id');
-            $table->string('nombreCargo');
-            $table->string('descripcionCargo');
+            $table->string('nombreCargo')->unique();
+            $table->string('descripcionCargo')->unique();
             $table->timestamps();
 
             $table->foreign('estado_id')->references('estado_id')->on('estados');

@@ -9,21 +9,19 @@
                     @foreach ($registroPostulante as $index => $postulante)
                         <div
                             class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <img class="rounded-t-lg" src="{{ asset($postulante->foto_postulante) }}"
-                                alt="Imagen del candidato"
+                            <img class="rounded-t-lg" src="{{ asset($postulante->fotoPostulante) }}" alt="Imagen del candidato"
                                 onerror="this.onerror=null; this.src='{{ asset('ruta/a/imagen-alternativa.jpg') }}'"
                                 style="max-width: 100%; height: auto;">
                             <div class="p-5">
-                                <a href="#">
-                                    <h5
-                                        class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
-                                        {{ $postulante->nombre_postulante }}
-                                    </h5>
-                                </a>
+                                <hr>
+                                <h5
+                                    class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
+                                    {{ $postulante->estudiante->nombreCompleto }}
+                                </h5>
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                                    Postula a: {{ $postulante->cargo_postulante }}
+                                    Postulante a: {{ $postulante->cargo->nombreCargo }}
                                     <br>
-                                    De grado: {{ $postulante->curso_postulante }}
+                                    Del Curso: {{ $postulante->estudiante->curso->nombreCurso }}
                                 </p>
                             </div>
                         </div>
@@ -39,140 +37,60 @@
                 </div>
             @endif
         </div>
-
-        <br>
+        <hr>
         <h1 class="mb-4 text-2xl font-bold">Agregar Postulantes a Cargos Estudiantiles</h1>
 
-        <div class="flex justify-center">
-            <div class="flex space-x-4 text-center">
-                <a href="#" class="btn btn-blue cargo-button" id="representante"
-                    data-target="representante">Representante de Curso</a>
-                <a href="#" class="btn btn-blue cargo-button" id="contralor" data-target="contralor">Controlador</a>
-                <a href="#" class="btn btn-blue cargo-button" id="personero" data-target="personero">Personero</a>
+        <div id="agregar-otro" class="w-full flex justify-center high-500px">
+            <div id="agregar-otro" class="w-full flex justify-center high-500px">
+                <div class="form-container mt-10 w-full max-w-4xl mx-auto">
+                    <form action="{{ route('sve.storePostulante', ['component' => 'postulaciones']) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="p-5 border border-gray-300 rounded-lg shadow-lg flex flex-col items-center w-full"
+                            style="max-width: 700px;">
+                            <!-- Input para agregar una imagen -->
+                            <input id="fotoPostulante" name="fotoPostulante" required type="file" accept="image/*"
+                                class="hidden">
+                            <!-- Vista previa de la imagen -->
+                            <img id="imagePreview" class="rounded-lg object-cover w-full" src=""
+                                alt="Imagen del candidato" style="height: auto;">
+                            <!-- Botón para cambiar la imagen -->
+                            <br>
+                            <button type="button" onclick="document.getElementById('fotoPostulante').click()"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+                                Cambiar imagen
+                            </button>
+                        </div>  
+                        <div
+                            style="margin-top: 20px; width: 100%; max-width: 700px; display: flex; justify-content: space-between;">
+                            <input type="text" name="estudiante_id" placeholder="Número de identidad"
+                                class="text-gray-900 bg-transparent border-b border-gray-500 dark:text-white focus:outline-none w-full mr-2">
+                            <select name="cargo_id" class="w-full px-4 py-2 border rounded">
+                                <option value="" selected disabled>Seleccione un cargo</option>
+                                @foreach ($cargos as $cargo)
+                                    <option value="{{ $cargo->cargo_id }}">{{ $cargo->nombreCargo }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mt-4 w-full flex justify-center">
+                            <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+                                Agregar postulante
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <div id="agregar-otro" class="w-full flex justify-center">
-            <div class="form-container mt-10">
-                <form action="{{ route('sve.storePostulante', ['component' => 'postulaciones']) }}" method="POST">
-                    @csrf
-                    <div class="p-5 border border-gray-300 rounded-lg shadow-lg flex flex-col items-center">
-                        <!-- Input para agregar una imagen -->
-                        <input id="imageUpload" type="file" accept="image/*" class="hidden">
-                        <!-- Vista previa de la imagen -->
-                        <img id="imagePreview" class="rounded-lg w-200 h-300 object-cover mb-4" src=""
-                            alt="Imagen del candidato" style="max-height: 300px;">
-                        <!-- Botón para cambiar la imagen -->
-                        <button type="button" onclick="document.getElementById('imageUpload').click()"
-                            class="btn btn-blue mb-4">Cambiar imagen</button>
-                    </div>
-
-                    <!-- Input para el nombre y el select -->
-                    <div style="margin-top: 20px; width: 350px; display: flex; justify-content: space-between;">
-                        <input type="text" name="numeroIdentificacion_id" placeholder="Número de identidad"
-                            class="text-gray-900 bg-transparent border-b border-gray-500 dark:text-white focus:outline-none w-full mr-2">
-                        <select name="curso" class="select-css w-full">
-                            <option value="" disabled selected>¿De qué curso?</option>
-                            <option value="transicion">Transición</option>
-                            <option value="primero">Primero</option>
-                            <option value="segundo">Segundo</option>
-                            <option value="tercero">Tercero</option>
-                            <option value="cuarto">Cuarto</option>
-                            <option value="quinto">Quinto</option>
-                            <option value="sexto">Sexto</option>
-                            <option value="septimo">Septimo</option>
-                            <option value="octavo">Octavo</option>
-                            <option value="noveno">Noveno</option>
-                            <option value="decimo">Décimo</option>
-                            <option value="undecimo">Undécimo</option>
-                        </select>
-                    </div>
-
-                    <!-- Input para el cargo -->
-                    <div style="margin-top: 20px; width: 350px; display: flex; justify-content: space-between;">
-                        <select name="cargo_id" class="select-css w-full">
-                            <option value="" disabled selected>¿Que cargo?</option>
-                            <option value="representante">Representante de Curso</option>
-                            <option value="contralor">Contralor</option>
-                            <option value="personero">Personero</option>
-                        </select>
-                    </div>
-
-                    <div class="mt-4 w-full flex justify-center">
-                        <button type="submit"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-lg transform transition duration-500 hover:scale-110">
-                            Agregar postulante
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', (event) => {
-                const cargoButtons = document.querySelectorAll('.cargo-button');
-                const agregarOtroButton = document.getElementById('agregar-otro');
-
-                // Eventos de clic para los botones de cargo
-                cargoButtons.forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        event.preventDefault();
-
-                        var cargo = button.getAttribute(
-                            'id'); // Obtén el cargo del atributo 'data-target' del botón
-                        var curso;
-
-                        // Define el curso en función del cargo
-                        switch (cargo) {
-                            case 'representante':
-                                curso = 'transicion';
-                                cargo = 'representante'
-                                break;
-                            case 'contralor':
-                                curso = 'decimo';
-                                cargo = 'contralor'
-                                break;
-                            case 'personero':
-                                curso = 'undecimo';
-                                cargo = 'personero'
-                                break;
-                        }
-
-                        console.log('curso: ' + curso);
-                        console.log('cargo: ' + cargo);
-
-                        // Si curso no es undefined, entonces asigna su valor al select
-                        if (curso !== undefined) {
-                            // Obtén el elemento select por su nombre
-                            var selectCurso = document.querySelector('select[name="curso"]');
-                            var selectCargo = document.querySelector('select[name="cargo_id"]');
-
-                            // Encuentra la opción con el valor que quieres seleccionar
-                            for (var i = 0; i < selectCurso.options.length; i++) {
-                                if (selectCurso.options[i].value == curso) {
-                                    // Si el valor de la opción coincide con 'curso', selecciona esa opción
-                                    selectCurso.options[i].selected = true;
-                                    break;
-                                }
-                            }
-                            for (var i = 0; i < selectCargo.options.length; i++) {
-                                if (selectCargo.options[i].value == cargo) {
-                                    // Si el valor de la opción coincide con 'cargo', selecciona esa opción
-                                    selectCargo.options[i].selected = true;
-                                    break;
-                                }
-                            }
-                        }
-                    });
+            <script>
+                document.getElementById('fotoPostulante').addEventListener('change', function(e) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('imagePreview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(this.files[0]);
                 });
+            </script>
 
-            });
-            document.getElementById('imageUpload').addEventListener('change', function(e) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        </script>
-    @endsection
+        @endsection

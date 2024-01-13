@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\SVE;
 use App\Http\Controllers\Controller;
 use App\Models\Cargo;
+use App\Models\Curso;
 use App\Models\Estudiante;
 use App\Models\Postulante;
 use App\Models\votacion;
+use App\Models\Voto;
 use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
 
@@ -42,7 +44,7 @@ class SVEController extends Controller
         }
 
         // Verificar si el estudiante ya ha votado
-        $votacion = votacion::where('id_estudiante', $estudiante->id)->first();
+        $votacion = Voto::where('id_estudiante', $estudiante->id)->first();
 
         // return $votacion;
         //verificar si el estudiante ya ha votado y completado su votacion 
@@ -94,27 +96,23 @@ class SVEController extends Controller
     public function show(Request $request)
     {
         $component = $request->route('component', 'dashboard');
+        $totalHombres = Estudiante::where('sexo', 'Masculino')->count();
+        $totalMujeres = Estudiante::where('sexo', 'Femenino')->count();
+        $totalEstudiantes = Estudiante::all()->count();
+        $curso = Curso::all();
+        $cargo = Cargo::all();
+
+
+        // return $cargo;
 
         switch ($component) {
             case 'estudiante':
-                $data = Estudiante::paginate(20);
+                $data = Estudiante::with('curso', 'estado',)->paginate(20);
+                // return $data;
                 break;
             case 'postulaciones':
-                $data = Postulante::orderByRaw(" CASE
-        WHEN cargo_postulante = 'Transición' THEN 1
-        WHEN cargo_postulante = 'Primero' THEN 2
-        WHEN cargo_postulante = 'Segundo' THEN 3
-        WHEN cargo_postulante = 'Tercero' THEN 4
-        WHEN cargo_postulante = 'Cuarto' THEN 5
-        WHEN cargo_postulante = 'Quinto' THEN 6
-        WHEN cargo_postulante = 'Sexto' THEN 7
-        WHEN cargo_postulante = 'Séptimo' THEN 8
-        WHEN cargo_postulante = 'Octavo' THEN 9
-        WHEN cargo_postulante = 'Noveno' THEN 10
-        WHEN cargo_postulante = 'Décimo' THEN 11
-        WHEN cargo_postulante = 'Consejero' THEN 12
-        WHEN cargo_postulante = 'Personero' THEN 13      
-        END")->paginate(10); // carga todos los postulantes
+                $data = Postulante::with('cargo', 'estudiante.curso')->paginate(10);
+                // return $data;
                 break;
             case 'conteovotos':
                 $data = Postulante::all(); // Carga todos los datos de otro modelo
@@ -125,7 +123,7 @@ class SVEController extends Controller
                 break; // Datos por defecto
         }
 
-        return view('dashboard', ['component' => $component, 'data' => $data]);
+        return view('dashboard', ['component' => $component, 'data' => $data, 'curso' => $curso, 'cargo' => $cargo, 'totalHombres' => $totalHombres, 'totalMujeres' => $totalMujeres, 'totalEstudiantes' => $totalEstudiantes]);
     }
 
     /**

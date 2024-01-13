@@ -14,44 +14,19 @@
             <div>
                 <h5 id="Total" class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white"> Cantidad de
                     estudiantes: </h5>
-                <h5 id="studentCount" class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white"></h5>
-                <p id="totalMen" class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de hombres: </p>
-                <p id="totalWomen" class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de mujeres: </p>
+                <h5 id="studentCount" class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white">
+                    {{ $totalEstudiantes }}</h5>
+                <p id="totalMen" class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de hombres:
+                    {{ $totalHombres }}</p>
+                <p id="totalWomen" class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de mujeres:
+                    {{ $totalMujeres }}</p>
             </div>
         </div>
     </div>
-
     <div id="chart"></div>
 
 
     <script>
-        // Aquí es donde defines la cantidad total de estudiantes
-        const totalStudents = [850];
-
-        let count = 0;
-        const element = document.getElementById('studentCount');
-
-        // Esta función se llama una vez por segundo para actualizar el recuento
-        function updateCount() {
-            if (count < totalStudents) {
-                // Si la cantidad total de estudiantes es mayor que 100 y la diferencia entre el conteo y el total es mayor o igual a 40, incrementa el conteo de 40 en 40
-                if (totalStudents > 100 && (totalStudents - count) >= 40) {
-                    count += 40;
-                } else {
-                    // Si la diferencia entre el conteo y el total es menor a 40, incrementa el conteo de 1 en 1
-                    count++;
-                }
-                element.innerText = count;
-            } else {
-                // Detén la actualización una vez que alcances el total de estudiantes
-                clearInterval(interval);
-            }
-        }
-
-        // Comienza a actualizar el recuento
-        // Definimos un intervalo para actualizar el conteo cada 100 milisegundos
-        const interval = setInterval(updateCount, 100);
-
         // Configuramos las opciones para el gráfico
         const options = {
             chart: {
@@ -59,7 +34,7 @@
                 height: 350 // Altura del gráfico
             },
             title: {
-                text: 'Hombres y Mujeres' // Título del gráfico
+                text: 'Hombres y Mujeres por curso' // Título del gráfico
             },
             series: [{
                     name: 'Hombres', // Nombre de la serie
@@ -95,7 +70,7 @@
             Agregar Estudiante
         </button>
 
-        
+
 
         <!-- Tabla de Estudiantes -->
         <div class="overflow-x-auto">
@@ -126,15 +101,9 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $student->numeroIdentificacion }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $student->nombreCompleto }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->curso }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->curso->nombreCurso }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $student->sexo }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if ($student->estado == 0)
-                                        Activo
-                                    @else
-                                        Inactivo
-                                    @endif
-                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $student->estado->nombreEstado }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <button type="button" data-modal-target="popup-modal"
                                         data-student-id="{{ $student->id }}" data-modal-toggle="popup-modal"
@@ -179,8 +148,11 @@
                         <div class="flex flex-wrap mb-2 -mx-3">
                             <div class="w-full px-3 mb-2">
                                 <label for="curso" class="block mb-2 font-semibold">Grado:</label>
-                                <input type="text" id="curso" name="curso" class="w-full px-4 py-2 border rounded"
-                                    value= "{{ $student->curso }}" placeholder="Grado">
+                                <select name="curso_id" class="w-full px-4 py-2 border rounded">
+                                    @foreach ($cursos as $curso)
+                                        <option value="{{ $curso->curso_id }}">{{ $curso->nombreCurso }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="w-full px-3 mb-2">
                                 <label for="sexo" class="block mb-2 font-semibold">Sexo:</label>

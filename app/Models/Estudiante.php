@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Estudiante extends Model
 {
     use HasFactory;
-    
+
     protected $primaryKey = 'estudiante_id';
     protected $fillable = [
         'numeroIdentificacion',
         'nombreCompleto',
-        'curso',
+        'curso_id',
         'sexo',
         'estado_id',
     ];
@@ -25,12 +25,11 @@ class Estudiante extends Model
 
     public function curso()
     {
-        return $this->belongsTo(Curso::class);
+        return $this->belongsTo(Curso::class, 'curso_id');
     }
 
-    //un cargo puede tener un solo estado
     public function estado()
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsTo(Estado::class, 'estado_id');
     }
 }
