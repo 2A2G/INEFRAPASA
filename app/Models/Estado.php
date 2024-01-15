@@ -42,4 +42,10 @@ class Estado extends Model
     {
         return $this->hasMany(Voto::class);
     }
+
+    // Un estado puede tener muchas fotos
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
 }

@@ -44,4 +44,10 @@ class Postulante extends Model
     {
         return $this->hasMany(Voto::class);
     }
+
+    //Un postulante puede una sola foto
+    public function photo()
+    {
+        return $this->hasOne(Photo::class, 'postulante_id', 'postulante_id');
+    }
 }

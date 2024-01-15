@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('postulantes', function (Blueprint $table) {
-            // $table->id();
-            $table->bigIncrements("postulante_id");
-            $table->integer('estudiante_id');
-            $table->integer("cargo_id");
+        Schema::create('photos', function (Blueprint $table) {
+            $table->id('photo_id');
+            $table->string('imagenCandidato');
+            $table->integer('postulante_id');
             $table->integer('estado_id');
             $table->timestamps();
 
-
-            $table->foreign("estudiante_id")->references("estudiante_id")->on("estudiantes");
             $table->foreign('estado_id')->references('estado_id')->on('estados');
-            $table->foreign("cargo_id")->references("cargo_id")->on("cargos");
+            $table->foreign('postulante_id')->references('postulante_id')->on('postulantes');
         });
     }
 
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('postulantes');
+        Schema::dropIfExists('photos');
     }
 };

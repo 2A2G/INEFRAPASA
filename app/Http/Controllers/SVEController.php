@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cargo;
 use App\Models\Curso;
 use App\Models\Estudiante;
+use App\Models\Photo;
 use App\Models\Postulante;
 use App\Models\votacion;
 use App\Models\Voto;
@@ -101,6 +102,7 @@ class SVEController extends Controller
         $totalEstudiantes = Estudiante::all()->count();
         $curso = Curso::all();
         $cargo = Cargo::all();
+        $photo = Photo::all();
 
 
         // return $cargo;
@@ -111,11 +113,11 @@ class SVEController extends Controller
                 // return $data;
                 break;
             case 'postulaciones':
-                $data = Postulante::with('cargo', 'estudiante.curso')->paginate(10);
-                // return $data;
+            case 'postulaciones':
+                $data = Postulante::with('cargo', 'estudiante.curso', 'photo')->paginate(10);
                 break;
             case 'conteovotos':
-                $data = Postulante::all(); // Carga todos los datos de otro modelo
+                $data = Postulante::all();
                 break;
                 // Agrega más casos según sea necesario...
             default:
@@ -123,7 +125,11 @@ class SVEController extends Controller
                 break; // Datos por defecto
         }
 
-        return view('dashboard', ['component' => $component, 'data' => $data, 'curso' => $curso, 'cargo' => $cargo, 'totalHombres' => $totalHombres, 'totalMujeres' => $totalMujeres, 'totalEstudiantes' => $totalEstudiantes]);
+        return view('dashboard', [
+            'component' => $component, 'data' => $data, 'curso' => $curso,
+            'cargo' => $cargo, 'totalHombres' => $totalHombres, 'totalMujeres' => $totalMujeres,
+            'totalEstudiantes' => $totalEstudiantes,
+        ]);
     }
 
     /**

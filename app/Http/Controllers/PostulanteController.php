@@ -6,8 +6,11 @@ use App\Models\Cargo;
 use App\Models\Curso;
 use App\Models\Estado;
 use App\Models\Estudiante;
+use App\Models\Photo;
 use App\Models\Postulante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PostulanteController extends Controller
 {
@@ -37,7 +40,7 @@ class PostulanteController extends Controller
         $validator = validator($request->all(), [
             'estudiante_id' => 'required|string',
             'cargo_id' => 'required|string',
-            'fotoPostulante' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'fotoPostulante' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -70,61 +73,56 @@ class PostulanteController extends Controller
         $cargoRepresentante = Cargo::where('nombreCargo', 'Representante de Curso')->value('cargo_id');
 
         // Validación de postulación
-        $posulante = Postulante::where('estudiante_id', $estudiante->estudiante_id)->first();
-        if ($posulante) {
+        $postulante = Postulante::where('estudiante_id', $estudiante->estudiante_id)->first();
+        if ($postulante) {
             return $this->redirectBackWithMessage(false, 'El estudiante ya se encuentra postulado a un cargo');
         }
 
-        // Guardar la imagen y obtener la ruta
-        if ($request->hasFile('fotoPostulante')) {
-            $imageName = time() . '.' . $request->fotoPostulante->extension();
-            $path = $request->fotoPostulante->storeAs('images', $imageName);
-        } else {
-            return $this->redirectBackWithMessage(false, 'No se ha proporcionado ninguna imagen.');
-        }
-
         if ($cursoEstudiante->curso_id === $cursoIdUndecimo && $cargo->cargo_id === $cargoPersonero) {
-            // Crear postulante
-            // Crear postulante con la ruta de la imagen
-            $savePostulante = new Postulante();
-            $savePostulante = $savePostulante->create([
-                'estudiante_id' => $request->estudiante_id,
-                'cargo_id' => $request->cargo_id,
-                'estado_id' => $request->estado_id, // Asegúrate de que esta información se envía en la solicitud
-                'fotoPostulante' => $path,
-            ]);
-            $savePostulante->save();
-            return $this->redirectBackWithMessage(true, 'Postulacion a personero exitosa');
+            return $this->savePostulante($request);
         }
         if ($cursoEstudiante->curso_id === $cursoIdDecimo && $cargo->cargo_id === $cargoContralor) {
-            // Crear postulante
-            // Crear postulante con la ruta de la imagen
-            $savePostulante = new Postulante();
-            $savePostulante = $savePostulante->create([
-                'estudiante_id' => $request->estudiante_id,
-                'cargo_id' => $request->cargo_id,
-                'estado_id' => $request->estado_id, // Asegúrate de que esta información se envía en la solicitud
-                'fotoPostulante' => $path,
-            ]);
-            $savePostulante->save();
-
-            return $this->redirectBackWithMessage(true, 'Postulacion a contralor exitosa');
+            return $this->savePostulante($request);
         }
         if ($cursoEstudiante->curso_id !== $cursoIdUndecimo && $cargo->cargo_id === $cargoRepresentante) {
-            // Crear postulante
-            // Crear postulante con la ruta de la imagen
+            return $this->savePostulante($request);
+        } else {
+            return $this->savePostulante($request);
+        }
+    }
+
+    public function savePostulante($request)
+    {
+        $estudianteId = Estudiante::where('numeroIdentificacion', $request->estudiante_id)->value('estudiante_id');
+        $estadoActivoId = Estado::where('nombreEstado', 'Activo')->value('estado_id');
+
+        DB::beginTransaction(); // Iniciar la transacción
+
+        try {
             $savePostulante = new Postulante();
             $savePostulante = $savePostulante->create([
-                'estudiante_id' => $request->estudiante_id,
+                'estudiante_id' => $estudianteId,
                 'cargo_id' => $request->cargo_id,
-                'estado_id' => $request->estado_id, // Asegúrate de que esta información se envía en la solicitud
-                'fotoPostulante' => $path,
+                'estado_id' => $estadoActivoId,
             ]);
-            $savePostulante->save();
 
-            return $this->redirectBackWithMessage(true, 'Postulacion a representante de curso exitosa');
-        } else {
-            return $this->redirectBackWithMessage(false, 'El estudiante no puede postularse a este cargo');
+            if ($request->hasFile('imagenCandidato') && $request->file('imagenCandidato')->isValid()) {
+                $path = $request->file('imagenCandidato')->store('/postulantes');
+                $shortenedPath = Str::limit(md5($path), 40, '');
+
+                $photo = new Photo();
+                $photo = $photo->create([
+                    'imagenCandidato' => $shortenedPath,
+                    'postulante_id' => $savePostulante->postulante_id,
+                    'estado_id' => $estadoActivoId,
+                ]);
+            }
+
+            DB::commit(); // Confirmar la transacción si todo sale bien
+            return $this->redirectBackWithMessage(true, 'Postulacion guardada exitosamente');
+        } catch (\Throwable $th) {
+            DB::rollBack(); // Revertir la transacción si hay un error
+            return $this->redirectBackWithMessage(false, 'No se pudo registrar el postulante, por favor verifique los datos ingresados: ' . $th->getMessage());
         }
     }
 

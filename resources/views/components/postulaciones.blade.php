@@ -9,10 +9,15 @@
                     @foreach ($registroPostulante as $index => $postulante)
                         <div
                             class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <img class="rounded-t-lg" src="{{ asset($postulante->fotoPostulante) }}" alt="Imagen del candidato"
+                            <img class="rounded-t   -lg"
+                                src="{{ asset('storage/postulantes' . $postulante->imagenCandidato) }}"
+                                alt="Imagen del candidato"
                                 onerror="this.onerror=null; this.src='{{ asset('ruta/a/imagen-alternativa.jpg') }}'"
                                 style="max-width: 100%; height: auto;">
                             <div class="p-5">
+                                @php
+                                    echo $postulante->photo->imagenCandidato;
+                                @endphp
                                 <hr>
                                 <h5
                                     class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
@@ -49,18 +54,18 @@
                         <div class="p-5 border border-gray-300 rounded-lg shadow-lg flex flex-col items-center w-full"
                             style="max-width: 700px;">
                             <!-- Input para agregar una imagen -->
-                            <input id="fotoPostulante" name="fotoPostulante" required type="file" accept="image/*"
+                            <input id="imagenCandidato" name="imagenCandidato" required type="file" accept="image/*"
                                 class="hidden">
                             <!-- Vista previa de la imagen -->
                             <img id="imagePreview" class="rounded-lg object-cover w-full" src=""
                                 alt="Imagen del candidato" style="height: auto;">
                             <!-- Botón para cambiar la imagen -->
                             <br>
-                            <button type="button" onclick="document.getElementById('fotoPostulante').click()"
+                            <button type="button" onclick="document.getElementById('imagenCandidato').click()"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
                                 Cambiar imagen
                             </button>
-                        </div>  
+                        </div>
                         <div
                             style="margin-top: 20px; width: 100%; max-width: 700px; display: flex; justify-content: space-between;">
                             <input type="text" name="estudiante_id" placeholder="Número de identidad"
@@ -84,7 +89,7 @@
             </div>
 
             <script>
-                document.getElementById('fotoPostulante').addEventListener('change', function(e) {
+                document.getElementById('imagenCandidato').addEventListener('change', function(e) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         document.getElementById('imagePreview').src = e.target.result;

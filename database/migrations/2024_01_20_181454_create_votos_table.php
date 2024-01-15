@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('votos', function (Blueprint $table) {
             // $table->id();
             $table->bigIncrements('voto_id');
-            $table->integer('postulante_id');
+            $table->integer('postulante_id');            
             $table->integer('cargo_id');
             $table->integer('estado_id');
             $table->string('cantidadVotos');

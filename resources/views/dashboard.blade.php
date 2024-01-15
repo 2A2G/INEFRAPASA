@@ -3,7 +3,9 @@
 @switch($component ?? 'default') {{-- Usar 'default' como valor predeterminado si $component no está definido --}}
     @case('estudiante')
         @section('content')
-            @component('components.estudiante', ['registroEstudiante' => $data, 'cursos' => $curso, 'cargos' => $cargo, 'totalEstudiantes' => $totalEstudiantes, 'totalHombres' => $totalHombres, 'totalMujeres' => $totalMujeres])
+            @component('components.estudiante', ['registroEstudiante' => $data, 'cursos' => $curso, 
+            'cargos' => $cargo, 'totalEstudiantes' => $totalEstudiantes, 'totalHombres' => $totalHombres, 
+            'totalMujeres' => $totalMujeres,])
             @endcomponent
         @endsection
     @break
