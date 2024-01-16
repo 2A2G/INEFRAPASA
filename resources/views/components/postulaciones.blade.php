@@ -5,19 +5,16 @@
         <h1 class="mb-0 text-2xl font-bold">Postulantes</h1>
         <div class="py-10">
             @if (count($registroPostulante) > 0)
-                <div class="grid max-w-6xl gap-5 mx-auto place-content-center md:grid-cols-3">
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- Asegúrate de que cada elemento de la cuadrícula tenga la misma clase -->
                     @foreach ($registroPostulante as $index => $postulante)
                         <div
-                            class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            <img class="rounded-t   -lg"
-                                src="{{ asset('storage/postulantes' . $postulante->imagenCandidato) }}"
+                            class="col-span-1 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                            <img class="rounded-t-lg w-full h-48 object-cover"
+                                src="{{ asset('storage/postulantes/' . $postulante->photo->imagenCandidato) }}"
                                 alt="Imagen del candidato"
-                                onerror="this.onerror=null; this.src='{{ asset('ruta/a/imagen-alternativa.jpg') }}'"
-                                style="max-width: 100%; height: auto;">
+                                onerror="this.onerror=null; this.src='{{ asset('ruta/a/imagen-alternativa.jpg') }}'">
                             <div class="p-5">
-                                @php
-                                    echo $postulante->photo->imagenCandidato;
-                                @endphp
                                 <hr>
                                 <h5
                                     class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
@@ -30,11 +27,9 @@
                                 </p>
                             </div>
                         </div>
-                        @if (($index + 1) % 3 == 0)
-                            <div class="w-full"></div> <!-- Añade un divisor si es necesario -->
-                        @endif
                     @endforeach
                 </div>
+
                 {{ $registroPostulante->links() }} <!-- Paginación -->
             @else
                 <div style="display: flex; justify-content: center; align-items: center;">
@@ -51,32 +46,36 @@
                     <form action="{{ route('sve.storePostulante', ['component' => 'postulaciones']) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
-                        <div class="p-5 border border-gray-300 rounded-lg shadow-lg flex flex-col items-center w-full"
-                            style="max-width: 700px;">
+                        <div
+                            class="p-5 border border-gray-300 rounded-lg shadow-lg flex flex-col items-center w-full max-w-lg mx-auto">
                             <!-- Input para agregar una imagen -->
                             <input id="imagenCandidato" name="imagenCandidato" required type="file" accept="image/*"
                                 class="hidden">
-                            <!-- Vista previa de la imagen -->
-                            <img id="imagePreview" class="rounded-lg object-cover w-full" src=""
-                                alt="Imagen del candidato" style="height: auto;">
+                            <!-- Vista previa de la imagen con tamaño fijo y centrado -->
+                            <div class="flex justify-center items-center overflow-hidden h-48 w-full">
+                                <img id="imagePreview" class="object-contain max-w-full max-h-full"
+                                    src="ruta/a/tu-imagen.jpg" alt="Imagen del candidato">
+                            </div>
                             <!-- Botón para cambiar la imagen -->
-                            <br>
                             <button type="button" onclick="document.getElementById('imagenCandidato').click()"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+                                class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
                                 Cambiar imagen
                             </button>
                         </div>
-                        <div
-                            style="margin-top: 20px; width: 100%; max-width: 700px; display: flex; justify-content: space-between;">
+
+                        <div class="mt-5 w-full max-w-lg mx-auto flex flex-wrap justify-between">
                             <input type="text" name="estudiante_id" placeholder="Número de identidad"
-                                class="text-gray-900 bg-transparent border-b border-gray-500 dark:text-white focus:outline-none w-full mr-2">
-                            <select name="cargo_id" class="w-full px-4 py-2 border rounded">
+                                class="text-gray-900 bg-transparent border-b border-gray-500 dark:text-white focus:outline-none w-full md:w-5/12 mr-2 mb-4 md:mb-0">
+                            <select name="cargo_id" class="w-full md:w-6/12 px-4 py-2 border rounded">
                                 <option value="" selected disabled>Seleccione un cargo</option>
                                 @foreach ($cargos as $cargo)
                                     <option value="{{ $cargo->cargo_id }}">{{ $cargo->nombreCargo }}</option>
                                 @endforeach
                             </select>
                         </div>
+
+
+
 
                         <div class="mt-4 w-full flex justify-center">
                             <button type="submit"

@@ -94,7 +94,7 @@ class PostulanteController extends Controller
     public function savePostulante($request)
     {
         $estudianteId = Estudiante::where('numeroIdentificacion', $request->estudiante_id)->value('estudiante_id');
-        $estadoActivoId = Estado::where('nombreEstado', 'Activo')->value('estado_id');
+        $estadoInactivo = Estado::where('nombreEstado', 'Inactivo')->value('estado_id');
 
         DB::beginTransaction(); // Iniciar la transacción
 
@@ -103,18 +103,19 @@ class PostulanteController extends Controller
             $savePostulante = $savePostulante->create([
                 'estudiante_id' => $estudianteId,
                 'cargo_id' => $request->cargo_id,
-                'estado_id' => $estadoActivoId,
+                'estado_id' => $estadoInactivo,
             ]);
 
             if ($request->hasFile('imagenCandidato') && $request->file('imagenCandidato')->isValid()) {
-                $path = $request->file('imagenCandidato')->store('/postulantes');
-                $shortenedPath = Str::limit(md5($path), 40, '');
+                $archivoImagen = $request->file('imagenCandidato');
+                $nombreArchivo = $archivoImagen->hashName(); // Genera un nombre de archivo hash único con extensión
+                $archivoImagen->storeAs('/postulantes', $nombreArchivo, 'public'); // Guarda el archivo en el storage
 
                 $photo = new Photo();
                 $photo = $photo->create([
-                    'imagenCandidato' => $shortenedPath,
+                    'imagenCandidato' => $nombreArchivo, // Guarda el nombre completo del archivo en la base de datos
                     'postulante_id' => $savePostulante->postulante_id,
-                    'estado_id' => $estadoActivoId,
+                    'estado_id' => $estadoInactivo,
                 ]);
             }
 
@@ -125,6 +126,8 @@ class PostulanteController extends Controller
             return $this->redirectBackWithMessage(false, 'No se pudo registrar el postulante, por favor verifique los datos ingresados: ' . $th->getMessage());
         }
     }
+
+
 
     private function redirectBackWithMessage($status, $message)
     {
