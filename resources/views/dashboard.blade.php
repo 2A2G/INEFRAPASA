@@ -5,7 +5,7 @@
         @section('content')
             @component('components.estudiante', ['registroEstudiante' => $data, 'cursos' => $curso, 
             'cargos' => $cargo, 'totalEstudiantes' => $totalEstudiantes, 'totalHombres' => $totalHombres, 
-            'totalMujeres' => $totalMujeres,])
+            'totalMujeres' => $totalMujeres, 'estados' => $estado])
             @endcomponent
         @endsection
     @break

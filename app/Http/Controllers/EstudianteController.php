@@ -27,21 +27,24 @@ class EstudianteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($component, Request $request)
     {
         // return $request;
         $validator = validator($request->all(), [
             'numeroIdentificacion' => 'required|string',
-            'nombreCompleto' => 'required|string|alpha_spaces',
-            'curso' => 'required|string',
-            'sexo' => 'required|string|alpha_spaces',
+            'nombreCompleto' => 'required|string',
+            'curso_id' => 'required|integer',
+            'sexo' => 'required|string',
+            'estado_id' => 'required|integer',
+            
         ]);
 
         if ($validator->fails()) {
-            return $this->redirectBackWithMessage(false, 'No se pudo registrar el estudiante, por favor verifique los datos ingresados');
+            return $this->redirectBackWithMessage(false, $validator->errors()->first());
         }
 
         $estudiante = Estudiante::where('numeroIdentificacion', $request->numeroIdentificacion)->first();
+        // return $estudiante;
 
         if ($estudiante === null) {
             Estudiante::create($validator->validated());

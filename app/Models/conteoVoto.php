@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Voto extends Model
+class conteoVoto extends Model
 {
     use HasFactory;
-
-    protected $primaryKey = 'voto_id';
+    protected $primaryKey = 'conteoVotos_id';
     protected $filable = [
         'postulante_id',
         'cargo_id',
         'estado_id',
+        'totalVotos',
     ];
 
     public function estado()
@@ -30,4 +30,5 @@ class Voto extends Model
     {
         return $this->belongsTo(Cargo::class);
     }
+    
 }

@@ -157,10 +157,19 @@
                             <div class="w-full px-3 mb-2">
                                 <label for="sexo" class="block mb-2 font-semibold">Sexo:</label>
                                 <select id="sexo" name="sexo" class="w-full px-4 py-2 border rounded">
-                                    <option value="hombre">Hombre</option>
-                                    <option value="mujer">Mujer</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
                                 </select>
                             </div>
+                            <div class="w-full px-3 mb-2">
+                                <label for="estado" class="block mb-2 font-semibold">Estado:</label>
+                                <select name="estado_id" class="w-full px-4 py-2 border rounded">
+                                    @foreach ($estados as $estado)
+                                        <option value="{{ $estado->estado_id }}">{{ $estado->nombreEstado}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
                         </div>
                         <div class="mt-4 text-center">
                             <button type="submit" class="px-4 py-2 mx-2 text-white bg-blue-500 rounded">Guardar</button>

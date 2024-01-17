@@ -66,6 +66,7 @@ class PostulanteController extends Controller
         // Validación de cargos por curso
         $cursoIdUndecimo = Curso::where('nombreCurso', 'Undecimo')->value('curso_id');
         $cursoIdDecimo = Curso::where('nombreCurso', 'Decimo')->value('curso_id');
+        $estadoActivo = Estado::where('nombreEstado', 'Activo')->value('estado_id');
 
         //Validación de cargos
         $cargoPersonero = Cargo::where('nombreCargo', 'Personero')->value('cargo_id');
@@ -73,7 +74,7 @@ class PostulanteController extends Controller
         $cargoRepresentante = Cargo::where('nombreCargo', 'Representante de Curso')->value('cargo_id');
 
         // Validación de postulación
-        $postulante = Postulante::where('estudiante_id', $estudiante->estudiante_id)->first();
+        $postulante = Postulante::where('estudiante_id', $estudiante->estudiante_id)->where('estado_id', $estadoActivo)->first();
         if ($postulante) {
             return $this->redirectBackWithMessage(false, 'El estudiante ya se encuentra postulado a un cargo');
         }
@@ -94,7 +95,7 @@ class PostulanteController extends Controller
     public function savePostulante($request)
     {
         $estudianteId = Estudiante::where('numeroIdentificacion', $request->estudiante_id)->value('estudiante_id');
-        $estadoInactivo = Estado::where('nombreEstado', 'Inactivo')->value('estado_id');
+        $estadoActivo = Estado::where('nombreEstado', 'Activo')->value('estado_id');
 
         DB::beginTransaction(); // Iniciar la transacción
 
@@ -103,7 +104,7 @@ class PostulanteController extends Controller
             $savePostulante = $savePostulante->create([
                 'estudiante_id' => $estudianteId,
                 'cargo_id' => $request->cargo_id,
-                'estado_id' => $estadoInactivo,
+                'estado_id' => $estadoActivo,
             ]);
 
             if ($request->hasFile('imagenCandidato') && $request->file('imagenCandidato')->isValid()) {
@@ -115,7 +116,7 @@ class PostulanteController extends Controller
                 $photo = $photo->create([
                     'imagenCandidato' => $nombreArchivo, // Guarda el nombre completo del archivo en la base de datos
                     'postulante_id' => $savePostulante->postulante_id,
-                    'estado_id' => $estadoInactivo,
+                    'estado_id' => $estadoActivo,
                 ]);
             }
 
@@ -163,8 +164,17 @@ class PostulanteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Postulante $postulante)
+    public function destroy($component, Postulante $postulante)
     {
-        //
+        // return $postulante;
+        $estadoInactivo = Estado::where('nombreEstado', 'Inactivo')->value('estado_id');
+        $postulante->estado_id = $estadoInactivo;
+        $postulante->save();
+
+        $photo = Photo::where('postulante_id', $postulante->postulante_id)->first();
+        $photo->estado_id = $estadoInactivo;
+        $photo->save();
+
+        return back()->with('status', true)->with('message', 'Postulante eliminado exitosamente');
     }
 }

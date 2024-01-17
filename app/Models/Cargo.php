@@ -23,4 +23,9 @@ class Cargo extends Model
     {
         return $this->hasMany(Postulante::class, 'cargo_id');
     }
+
+    public function conteoVotos()
+    {
+        return $this->hasMany(conteoVoto::class, 'cargo_id');
+    }
 }

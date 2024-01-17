@@ -50,4 +50,10 @@ class Postulante extends Model
     {
         return $this->hasOne(Photo::class, 'postulante_id', 'postulante_id');
     }
+
+    //Un postulante puede tener muchos votos
+    public function conteoVoto()
+    {
+        return $this->hasMany(conteoVoto::class);
+    }
 }

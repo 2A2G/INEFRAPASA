@@ -26,6 +26,21 @@
                                     Del Curso: {{ $postulante->estudiante->curso->nombreCurso }}
                                 </p>
                             </div>
+                            <form
+                                action="{{ route('sve.deletePostulante', ['component' => 'postulaciones', 'postulante' => $postulante->postulante_id]) }}"
+                                method="POST">
+                                @csrf
+                                <!-- Agrega un campo oculto para el postulante_id -->
+                                <input type="hidden" name="postulante_id" value="{{ $postulante->postulante_id }}">
+
+                                <div class="flex justify-end p-5">
+                                    <button type="submit"
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+                                        Eliminar Postulación
+                                    </button>
+                                </div>
+                            </form>
+
                         </div>
                     @endforeach
                 </div>
@@ -43,7 +58,7 @@
         <div id="agregar-otro" class="w-full flex justify-center high-500px">
             <div id="agregar-otro" class="w-full flex justify-center high-500px">
                 <div class="form-container mt-10 w-full max-w-4xl mx-auto">
-                    <form action="{{ route('sve.storePostulante', ['component' => 'postulaciones']) }}" method="POST"
+                    <form action="{{ route('store.storePostulante', ['component' => 'postulaciones']) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div

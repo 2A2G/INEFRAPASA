@@ -39,12 +39,15 @@ Route::prefix('inefrapasa')->group(function () {
 
 
     Route::prefix('/estadistica')->middleware('auth')->group(function () {
-        Route::post('/', [SVEController::class, 'store'])->name('sve.storeEstudiantes');
         Route::get('/{component}', [SVEController::class, 'show'])->name('sve.showEstudiantes');
-        Route::post('/{component}', [PostulanteController::class, 'store'])->name('sve.storePostulante');
-
-        Route::post('/{component}/storeStudents', [EstudianteController::class, 'store'])->name('sve.storeStudents');
+        Route::post('/{component}', [EstudianteController::class, 'store'])->name('sve.storeStudents');
         Route::post('/{component}/deliteStudents/{estudiante}', [EstudianteController::class, 'destroy'])->name('sve.deleteStudents');
+
+    
+        Route::post('/{component}/$postulacion', [PostulanteController::class, 'store'])->name('store.storePostulante');
+        Route::post('/{component}/{postulante}', [PostulanteController::class, 'destroy'])->name('sve.deletePostulante');
+
+        
 
         
     });

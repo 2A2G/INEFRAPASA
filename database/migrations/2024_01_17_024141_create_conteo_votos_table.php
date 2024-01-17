@@ -11,20 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('votos', function (Blueprint $table) {
-            $table->bigIncrements('voto_id');
-            $table->integer('estudiante_id');
+        Schema::create('conteo_votos', function (Blueprint $table) {
+            $table->id('conteoVotos_id');
+            $table->integer('postulante_id');
             $table->integer('cargo_id');
             $table->integer('estado_id');
+            $table->integer('totalVotos')->default(0); // Inicia el conteo de votos en 0
             $table->timestamps();
-        
-            $table->foreign('estudiante_id')->references('estudiante_id')->on('estudiantes');
+
+            $table->foreign('postulante_id')->references('postulante_id')->on('postulantes');
             $table->foreign('cargo_id')->references('cargo_id')->on('cargos');
             $table->foreign('estado_id')->references('estado_id')->on('estados');
-        
-            $table->unique(['estudiante_id', 'cargo_id']); // Asegura que la votación sea única por cargo
         });
-        
     }
 
     /**
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('votos');
+        Schema::dropIfExists('conteo_votos');
     }
 };

@@ -6,6 +6,7 @@ use App\Models\SVE;
 use App\Http\Controllers\Controller;
 use App\Models\Cargo;
 use App\Models\Curso;
+use App\Models\Estado;
 use App\Models\Estudiante;
 use App\Models\Photo;
 use App\Models\Postulante;
@@ -100,9 +101,10 @@ class SVEController extends Controller
         $totalHombres = Estudiante::where('sexo', 'Masculino')->count();
         $totalMujeres = Estudiante::where('sexo', 'Femenino')->count();
         $totalEstudiantes = Estudiante::all()->count();
+        $estadoActivoId = Estado::where('nombreEstado', 'Activo')->value('estado_id');
         $curso = Curso::all();
         $cargo = Cargo::all();
-        $photo = Photo::all();
+        $estado = Estado::all();
 
 
         // return $cargo;
@@ -113,8 +115,9 @@ class SVEController extends Controller
                 // return $data;
                 break;
             case 'postulaciones':
-            case 'postulaciones':
-                $data = Postulante::with('cargo', 'estudiante.curso', 'photo')->paginate(10);
+                $data = Postulante::with('cargo', 'estudiante.curso', 'photo')
+                    ->where('estado_id', $estadoActivoId)
+                    ->paginate(10);
                 break;
             case 'conteovotos':
                 $data = Postulante::all();
@@ -128,7 +131,7 @@ class SVEController extends Controller
         return view('dashboard', [
             'component' => $component, 'data' => $data, 'curso' => $curso,
             'cargo' => $cargo, 'totalHombres' => $totalHombres, 'totalMujeres' => $totalMujeres,
-            'totalEstudiantes' => $totalEstudiantes,
+            'totalEstudiantes' => $totalEstudiantes, 'estado' => $estado
         ]);
     }
 
