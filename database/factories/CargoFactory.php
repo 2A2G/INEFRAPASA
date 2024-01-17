@@ -19,7 +19,7 @@ class CargoFactory extends Factory
         return [
             'nombreCargo' => $this->faker->unique()->randomElement(['Representante de Curso', 'Contralor', 'Personero']),
             'descripcionCargo' => $this->faker->text,
-            'estado_id' => '1'
+            'estado_id' => '2'
 
         ];
     }

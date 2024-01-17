@@ -27,7 +27,7 @@ class CursoFactory extends Factory
 
         return [
             'nombreCurso' => $nombreCurso,
-            'estado_id' => '1'
+            'estado_id' => '2'
         ];
     }
 }

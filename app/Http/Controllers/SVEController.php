@@ -34,7 +34,7 @@ class SVEController extends Controller
     {
         $numeroIdentidad = $request->input('numeroIdentidad');
         // return $numeroIdentidad;
-        $estudiante = Estudiante::where('numeroIdentificacion', $numeroIdentidad)->where('estado', '0')->first();
+        $estudiante = Estudiante::where('numeroIdentificacion', $numeroIdentidad)->where('estado', 'Activo')->first();
 
         // return $estudiante;
 
@@ -101,7 +101,7 @@ class SVEController extends Controller
         $totalHombres = Estudiante::where('sexo', 'Masculino')->count();
         $totalMujeres = Estudiante::where('sexo', 'Femenino')->count();
         $totalEstudiantes = Estudiante::all()->count();
-        $estadoActivoId = Estado::where('nombreEstado', 'Activo')->value('estado_id');
+        $estadoPendiente = Estado::where('nombreEstado', 'Pendiente')->value('estado_id');
         $curso = Curso::all();
         $cargo = Cargo::all();
         $estado = Estado::all();
@@ -116,7 +116,7 @@ class SVEController extends Controller
                 break;
             case 'postulaciones':
                 $data = Postulante::with('cargo', 'estudiante.curso', 'photo')
-                    ->where('estado_id', $estadoActivoId)
+                    ->where('estado_id', $estadoPendiente)
                     ->paginate(10);
                 break;
             case 'conteovotos':

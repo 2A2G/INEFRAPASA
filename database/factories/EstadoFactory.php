@@ -17,7 +17,7 @@ class EstadoFactory extends Factory
 
     private static $indiceCurso = 0;
     private static $nombresEstados = [
-        'Activo', 'Inactivo'
+        'Pendiente', 'Activo', 'Contando', 'Finalizado', 'Inactivo'
     ];
 
     public function definition(): array

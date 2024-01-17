@@ -95,7 +95,7 @@ class PostulanteController extends Controller
     public function savePostulante($request)
     {
         $estudianteId = Estudiante::where('numeroIdentificacion', $request->estudiante_id)->value('estudiante_id');
-        $estadoActivo = Estado::where('nombreEstado', 'Activo')->value('estado_id');
+        $estadoPendiente = Estado::where('nombreEstado', 'Pendiente')->value('estado_id');
 
         DB::beginTransaction(); // Iniciar la transacción
 
@@ -104,7 +104,7 @@ class PostulanteController extends Controller
             $savePostulante = $savePostulante->create([
                 'estudiante_id' => $estudianteId,
                 'cargo_id' => $request->cargo_id,
-                'estado_id' => $estadoActivo,
+                'estado_id' => $estadoPendiente,
             ]);
 
             if ($request->hasFile('imagenCandidato') && $request->file('imagenCandidato')->isValid()) {
@@ -116,7 +116,7 @@ class PostulanteController extends Controller
                 $photo = $photo->create([
                     'imagenCandidato' => $nombreArchivo, // Guarda el nombre completo del archivo en la base de datos
                     'postulante_id' => $savePostulante->postulante_id,
-                    'estado_id' => $estadoActivo,
+                    'estado_id' => $estadoPendiente,
                 ]);
             }
 

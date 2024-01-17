@@ -21,7 +21,7 @@ class EstudianteFactory extends Factory
             'nombreCompleto' => $this->faker->name(),
             'curso_id' => $this->faker->numberBetween(1, 12),
             'sexo' => $this->faker->randomElement(['Masculino', 'Femenino']),
-            'estado_id' => $this->faker->numberBetween(1, 2),
+            'estado_id' => $this->faker->randomElement([2, 5]),
         ];
     }
 }

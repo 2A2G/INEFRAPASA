@@ -13,6 +13,6 @@ class EstadoSeeder extends Seeder
      */
     public function run(): void
     {
-        Estado::factory(2)->create();
+        Estado::factory(5)->create();
     }
 }
