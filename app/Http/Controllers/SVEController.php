@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SVE;
 use App\Http\Controllers\Controller;
 use App\Models\Cargo;
+use App\Models\conteoVoto;
 use App\Models\Curso;
 use App\Models\Estado;
 use App\Models\Estudiante;
@@ -32,55 +33,51 @@ class SVEController extends Controller
      */
     public function create(Request $request)
     {
-        $numeroIdentidad = $request->input('numeroIdentidad');
-        // return $numeroIdentidad;
-        $estudiante = Estudiante::where('numeroIdentificacion', $numeroIdentidad)->where('estado', 'Activo')->first();
+        $validator = validator($request->all(), [
+            'numeroIdentidad' => 'required|string|max:10|min:10',
+        ]);
+
+        // return $request;
+        $estadoActivoId = Estado::where('nombreEstado', 'Activo')->value('estado_id');
+        $estudiante = Estudiante::where('numeroIdentificacion', $request->numeroIdentidad)->where('estado_id', $estadoActivoId)->first();
 
         // return $estudiante;
 
         // Verificar si el estudiante existe
         if (!$estudiante) {
-            session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', no existe en la base de datos. Verifique e intente nuevamente.');
+            session()->flash('message', 'El estudiante con el número de identidad ' . $request->numeroIdentidad . ', no existe en la base de datos. Verifique e intente nuevamente.');
             session()->flash('status', 'error');
             return redirect()->back();
         }
 
-        // Verificar si el estudiante ya ha votado
-        $votacion = Voto::where('id_estudiante', $estudiante->id)->first();
+        $cantidadCargos = Cargo::where('estado_id', $estadoActivoId)->count();
+        $estudianteVoto = Voto::where('estudiante_id', $estudiante->estudiante_id)->get();
 
-        // return $votacion;
-        //verificar si el estudiante ya ha votado y completado su votacion 
-        if ($votacion && $votacion->representante_curso == '1' && $votacion->contralor == '1' && $votacion->personero == '1') {
-            session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', ya ha votado y completado su votación.');
-            session()->flash('status', 'warning');
-            return redirect()->back();
+        if ($estudianteVoto->isEmpty()) {
+            // Si el estudiante no ha votado, mostrar todas las postulaciones
+            $postulaciones = Postulante::paginate($cantidadCargos);
+            session()->flash('status', 'success');
+            return view('SistemaVotacion.index', ['estudiante' => $estudiante, 'postulaciones' => $postulaciones, 'cargos' => Cargo::all(), 'estudiante' => $estudiante]);
         }
+        $cargoRepresentanteCurso = Cargo::where('nombreCargo', 'Representante de Curso')->value('cargo_id');
+        $cargoControladores = Cargo::where('nombreCargo', 'Controladores')->value('cargo_id');
+        $cargoPersonero = Cargo::where('nombreCargo', 'Personero')->value('cargo_id');
 
-        $postulantes = Postulante::where('estado_postulante', '0')->get();
-        if (!$postulantes || $postulantes->count() == 0) {
-            session()->flash('message', 'El sistema de votacion no tiene postulantes registrados. Comuniquese con el administrador del sistema.');
-            session()->flash('status', 'error');
-            return redirect()->back();
+        // Si el estudiante ya ha votado
+        foreach ($estudianteVoto as $voto) {
+            if ($voto->cargo_id == $cargoRepresentanteCurso) {
+                // Mostrar la página de los controladores
+                $postulaciones = Postulante::where('cargo_id', $cargoControladores)->paginate($cantidadCargos);
+            } elseif ($voto->cargo_id == $cargoControladores) {
+                // Mostrar la página del personero
+                $postulaciones = Postulante::where('cargo_id', $cargoPersonero)->paginate($cantidadCargos);
+            } else {
+                session()->flash('message', 'El estudiante con el número de identidad ' . $request->numeroIdentidad . ', ya ha votado.');
+                session()->flash('status', 'error');
+                return redirect()->back();
+            }
+            return view('SistemaVotacion.index', compact('postulaciones'));
         }
-        // return $postulantes;
-
-        session()->flash('message', 'El estudiante con el número de identidad ' . $numeroIdentidad . ', puede votar.');
-        session()->flash('status', 'success');
-
-        // Verificar si el estudiante ya ha votado y no ha completado su votacion
-        $cargos = Cargo::with(['postulantes' => function ($query) {
-            $query->join('cargos', 'postulantes.cargo_id', '=', 'cargos.id')
-                ->select('postulantes.*', 'cargos.nombre_cargo')
-                ->orderByRaw("CASE
-                    WHEN cargos.nombre_cargo = 'Representante de Curso' THEN 1
-                    WHEN cargos.nombre_cargo = 'Contralor' THEN 2
-                    WHEN cargos.nombre_cargo = 'Personero' THEN 3
-                    ELSE 4 END");
-        }])->get();
-
-        // return $cargos;
-
-        return view('SistemaVotacion.index', ['cargos' => $cargos, 'postulantes' => $postulantes, 'estudiante' => $estudiante]);
     }
 
 
@@ -120,7 +117,7 @@ class SVEController extends Controller
                     ->paginate(10);
                 break;
             case 'conteovotos':
-                $data = Postulante::all();
+                $data = conteoVoto::all();
                 break;
                 // Agrega más casos según sea necesario...
             default:

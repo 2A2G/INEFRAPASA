@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('conteo_votos', function (Blueprint $table) {
             $table->id('conteoVotos_id');
-            $table->integer('postulante_id');
-            $table->integer('cargo_id');
-            $table->integer('estado_id');
-            $table->integer('totalVotos')->default(0); // Inicia el conteo de votos en 0
+            $table->integer('postulante_id')->nullable(); // Referencia al postulante
+            $table->string('votoBlanco')->nullable(); // Indica si el voto fue en blanco. 'SI' para votos en blanco, NULL para votos a postulantes
+            $table->integer('cargo_id'); // Referencia al cargo por el que se vota
+            $table->integer('estado_id'); // Referencia al estado del voto
+            $table->integer('totalVotos')->default(0); // Conteo de votos para este postulante o voto en blanco
             $table->timestamps();
 
-            $table->foreign('postulante_id')->references('postulante_id')->on('postulantes');
-            $table->foreign('cargo_id')->references('cargo_id')->on('cargos');
-            $table->foreign('estado_id')->references('estado_id')->on('estados');
+            $table->unique(['postulante_id', 'votoBlanco']); // Cada combinación de postulante y voto en blanco es única
+            $table->foreign('postulante_id')->references('postulante_id')->on('postulantes'); // Relación con la tabla de postulantes
+            $table->foreign('cargo_id')->references('cargo_id')->on('cargos'); // Relación con la tabla de cargos
+            $table->foreign('estado_id')->references('estado_id')->on('estados'); // Relación con la tabla de estados
         });
     }
 
